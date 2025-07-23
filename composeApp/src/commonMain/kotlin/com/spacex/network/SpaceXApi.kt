@@ -27,7 +27,6 @@ interface SpaceXApi {
 
 class SpaceXNetworkApi(
     private val client: HttpClient,
-    private val apiUrl: String,
 ) : SpaceXApi {
 
     companion object {

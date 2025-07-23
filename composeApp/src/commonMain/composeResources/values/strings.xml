@@ -14,6 +14,13 @@
     <string name="error_network">Oops! Something went wrong on the server. We are working on it.</string>
     <string name="no_results_found">No results found!</string>
 
+    <string name="error_failed_to_load_favorites">Failed to load favorites</string>
+    <string name="success_removed_from_favorites">%1$s removed from favorites</string>
+    <string name="success_toggle_favorites">%1$s toggle favorites</string>
+
+    <string name="title_favorites">Favorites</string>
+    <string name="title_settings">Setting</string>
+
     <string name="network_error_description">A network error occurred. Check your connection or try again</string>
     <string name="network_error_title">Oh no!</string>
     <string name="network_error_retry_button_text">Try again</string>
@@ -22,4 +29,10 @@
     <string name="sync_notification_success">Sync successful</string>
     <string name="sync_notification_failure">Sync failed</string>
 
+    <string name="dark_mode">Dark Mode</string>
+    <string name="light_mode">Light Mode</string>
+    <string name="system_default">System Default</string>
+
+    <string name="retry">Retry</string>
+    <string name="no_data">No data</string>
 </resources>
