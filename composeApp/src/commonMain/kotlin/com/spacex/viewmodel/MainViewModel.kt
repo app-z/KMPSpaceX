@@ -31,11 +31,8 @@ import com.spacex.model.FalconInfo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModel(
@@ -48,7 +45,7 @@ class MainViewModel(
             .transformLatest {
                     emit(
                         if (it.isEmpty()) {
-                            HomeUiState(SampleData.getRockets())
+                            HomeUiState(SampleData.getRockets()) /// delete it!
                         } else {
                             HomeUiState(
                                 falconInfo = it.map { falconEntity ->
@@ -91,13 +88,6 @@ class MainViewModel(
                 set(APP_CONTAINER_KEY, appContainer)
             }
     }
-
-    fun addItemToCart(fruittie: FalconInfo) {
-        viewModelScope.launch {
-//            repository.addToCart(fruittie)
-        }
-    }
-
 }
 
 /**

@@ -1,4 +1,4 @@
-package com.spacex
+package com.spacex.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight

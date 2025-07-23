@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.spacex.BottomNavigationBar
-import com.spacex.NavigationItem
-import com.spacex.NavigationSideBar
-import com.spacex.RootNavGraph
-import com.spacex.navigationItemsLists
+import com.spacex.navigation.BottomNavigationBar
+import com.spacex.navigation.NavigationItem
+import com.spacex.navigation.NavigationSideBar
+import com.spacex.navigation.RootNavGraph
+import com.spacex.navigation.navigationItemsLists
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.spacex
+package com.spacex.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.spacex.Routes
+import com.spacex.navigation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
