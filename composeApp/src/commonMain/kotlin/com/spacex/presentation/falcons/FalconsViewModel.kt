@@ -78,9 +78,9 @@ class FalconsViewModel(
     }
 
     private fun toggleFindActiveFlag() {
-        val isFindActiveCurrent = _uiState.value.isFindActive
+        val isFindActiveCurrent = uiState.value.isFindActive
         _uiState.update {
-            _uiState.value.copy(isFindActive = !isFindActiveCurrent)
+            it.copy(isFindActive = !isFindActiveCurrent)
         }
     }
 
@@ -92,13 +92,13 @@ class FalconsViewModel(
 
     private fun clearError() {
         _uiState.update {
-            _uiState.value.copy(error = null)
+            it.copy(error = null)
         }
     }
 
     fun updateCurrentRowMode(mode: String) {
         _uiState.update {
-            _uiState.value.copy(
+            it.copy(
                 rowMode = mode
             )
         }
@@ -122,7 +122,7 @@ class FalconsViewModel(
                                 })
                             }
                             _uiState.update {
-                                _uiState.value.copy(
+                                it.copy(
                                     falconInfos = rocketsResults.map { it.mapToDomain() },
                                     isLoading = false,
                                     error = null
@@ -132,7 +132,7 @@ class FalconsViewModel(
                     } else {
                         if (res.isFailure) {
                             _uiState.emit(
-                                _uiState.value.copy(
+                                uiState.value.copy(
                                     error = UiText.StaticString(
                                         res.exceptionOrNull()?.message ?: "Error throw"
                                     ),
@@ -141,7 +141,7 @@ class FalconsViewModel(
                             )
                         } else {
                             _uiState.emit(
-                                _uiState.value.copy(
+                                uiState.value.copy(
                                     error = UiText.StaticString("Unknown network error"),
                                     isLoading = false,
                                 )
@@ -151,7 +151,7 @@ class FalconsViewModel(
                     }
                 } else {
                     _uiState.update {
-                        _uiState.value.copy(
+                        it.copy(
                             falconInfos = falconEntities.map { it.mapToDomain() },
                             isLoading = false,
                             error = null
@@ -171,7 +171,7 @@ class FalconsViewModel(
             repository.loadFilteredData(filter = filter)
                 .collect { falconEntities ->
                     _uiState.update {
-                        _uiState.value.copy(
+                        it.copy(
                             falconInfos = if (falconEntities.isEmpty()) {
                                 emptyList()
                             } else {
@@ -189,7 +189,7 @@ class FalconsViewModel(
 
     private suspend fun showLoaderState() {
         _uiState.emit(
-            _uiState.value.copy(isLoading = true)
+            uiState.value.copy(isLoading = true)
         )
     }
 

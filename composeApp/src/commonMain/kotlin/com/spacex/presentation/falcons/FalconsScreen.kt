@@ -28,6 +28,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,8 +54,8 @@ import com.spacex.model.FalconInfo
 import com.spacex.ui.FalconInfoCard2
 import com.spacex.ui.FalconInfoRow
 import com.spacex.ui.common.EmptyContent
-import com.spacex.ui.common.NetworkError
 import com.spacex.ui.common.ShimmerEffect
+import com.spacex.ui.home.NetworkError
 import com.spacex.utils.AppPreferences.Companion.CARD_MODE
 import com.spacex.utils.AppPreferences.Companion.ROW_MODE
 import kmpspacex.composeapp.generated.resources.Res
@@ -113,6 +114,13 @@ fun FalconsScreen(
             lifecycleOwner.lifecycle,
             Lifecycle.State.STARTED
         )
+
+
+
+    SideEffect {
+        println("uiState = $uiState")
+        println("effect = $effect")
+    }
 
     val localLifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(key1 = localLifecycleOwner) {

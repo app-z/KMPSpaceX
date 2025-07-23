@@ -41,13 +41,13 @@ class SettingsViewModel(
     private fun changeThemeMode(mode: String) = viewModelScope.launch(Dispatchers.IO) {
         appPreferences.changeThemeMode(mode)
         _state.update {
-            state.value.copy(currentTheme = mode)
+            it.copy(currentTheme = mode)
         }
     }
 
     private fun getCurrentRowMode() = runBlocking {
         _state.update {
-            state.value.copy(rowMode = appPreferences.getRowMode())
+            it.copy(rowMode = appPreferences.getRowMode())
         }
     }
 
@@ -55,7 +55,7 @@ class SettingsViewModel(
         viewModelScope.launch {
             appPreferences.setRowMode(mode)
             _state.update {
-                state.value.copy(rowMode = mode)
+                it.copy(rowMode = mode)
 
             }
         }

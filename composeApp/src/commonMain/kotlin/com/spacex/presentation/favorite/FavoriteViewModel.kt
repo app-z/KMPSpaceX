@@ -106,7 +106,7 @@ class FavoriteViewModel(
 
     private fun updateCurrentRowMode(mode: String) {
         _uiState.update {
-            _uiState.value.copy(
+            it.copy(
                 rowMode = mode
             )
         }
@@ -116,7 +116,7 @@ class FavoriteViewModel(
         viewModelScope.launch {
             repository.loadFavoriteData()
                 .catch { error ->
-                    _uiState.update { it ->
+                    _uiState.update {
                         it.copy(
                             isLoading = false,
                             error =
@@ -129,7 +129,7 @@ class FavoriteViewModel(
                 }
                 .collect { falconEntities ->
                     _uiState.update {
-                        _uiState.value.copy(
+                        it.copy(
                             favoritesFalconInfos =
                                 if (falconEntities.isEmpty()) {
                                     emptyList()

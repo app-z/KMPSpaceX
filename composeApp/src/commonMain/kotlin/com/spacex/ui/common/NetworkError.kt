@@ -1,4 +1,4 @@
-package com.spacex.ui.common
+package com.spacex.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import kmpspacex.composeapp.generated.resources.Res
 import kmpspacex.composeapp.generated.resources.network_error_retry_button_text
 import kmpspacex.composeapp.generated.resources.network_error_title
