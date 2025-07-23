@@ -22,4 +22,8 @@
     <string name="sync_notification_success">Sync successful</string>
     <string name="sync_notification_failure">Sync failed</string>
 
+    <string name="dark_mode">Dark Mode</string>
+    <string name="light_mode">Light Mode</string>
+    <string name="system_default">System Default</string>
+
 </resources>

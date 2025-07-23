@@ -13,22 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.spacex.database
+package com.spacex.utils
 
-import androidx.room.ConstructedBy
-import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.RoomDatabaseConstructor
-import com.spacex.model.FalconEntity
+import com.spacex.database.AppDatabase
 
-@Database(entities = [FalconEntity::class], version = 1)
-@ConstructedBy(AppDatabaseConstructor::class)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun falconDao(): SpaceXDao
-}
-
-// The Room compiler generates the `actual` implementations.
-@Suppress("NO_ACTUAL_FOR_EXPECT")
-expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
-    override fun initialize(): AppDatabase
-}
+expect fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase>

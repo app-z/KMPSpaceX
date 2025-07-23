@@ -24,6 +24,7 @@ import com.spacex.model.FalconInfo
 import com.spacex.model.RocketsResult
 import com.spacex.repository.FalconRepository
 import com.spacex.repository.OnlineFalconRepository
+import com.spacex.utils.ERROR_LOADING_DATA
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
@@ -45,12 +46,17 @@ class MainViewModel(
             .transformLatest {
                 emit(
                     if (it.isEmpty()) {
-                        HomeUiState(
-                            getOnlineFalcons()
-                                .map {
-                                    rocketsResult -> rocketsResult.mapToDomain()
-                                }
-                        )
+                        val onlineRes = getOnlineFalcons()
+                        if (onlineRes.isEmpty()) {
+                            HomeUiState(error = ERROR_LOADING_DATA)
+                        } else {
+                            HomeUiState(
+                                getOnlineFalcons()
+                                    .map { rocketsResult ->
+                                        rocketsResult.mapToDomain()
+                                    }
+                            )
+                        }
                     } else {
                         HomeUiState(
                             falconInfo = it.map { falconEntity ->
@@ -88,6 +94,7 @@ class MainViewModel(
      */
     data class HomeUiState(
         val falconInfo: List<FalconInfo> = listOf(),
+        val error: Int = 0
     )
 
     private const val TIMEOUT_MILLIS = 5_000L

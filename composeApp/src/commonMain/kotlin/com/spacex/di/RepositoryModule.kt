@@ -1,6 +1,5 @@
 package com.spacex.di
 
-import com.spacex.DataRepository
 import com.spacex.database.AppDatabase
 import com.spacex.repository.FalconRepository
 import com.spacex.repository.OnlineFalconRepository

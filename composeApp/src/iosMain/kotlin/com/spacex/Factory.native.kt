@@ -16,29 +16,26 @@
 package com.spacex
 
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.spacex.database.AppDatabase
-import com.spacex.database.DB_FILE_NAME
 import com.spacex.network.SpaceXApi
+import com.spacex.utils.DB_Name
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
+import platform.Foundation.NSHomeDirectory
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
-actual class Factory {
-    actual fun createRoomDatabase(): AppDatabase {
-        val dbFile = "${fileDirectory()}/$DB_FILE_NAME"
-        return Room
-            .databaseBuilder<AppDatabase>(
-                name = dbFile,
-            ).setDriver(BundledSQLiteDriver())
-            .setQueryCoroutineContext(Dispatchers.IO)
-            .build()
-    }
-
+actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+    val dbFilePath = NSHomeDirectory() + "/$DB_Name"
+    return Room.databaseBuilder<AppDatabase>(
+        name = dbFilePath,
+    )
+}
     @OptIn(ExperimentalForeignApi::class)
     private fun fileDirectory(): String {
         val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
@@ -51,5 +48,3 @@ actual class Factory {
         return requireNotNull(documentDirectory).path!!
     }
 
-    actual fun createApi(): SpaceXApi = commonCreateApi()
-}

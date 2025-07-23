@@ -60,6 +60,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
+            implementation(libs.androidx.data.store.core)
+
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -71,6 +73,8 @@ kotlin {
             implementation(libs.coil.network)
             implementation(libs.navigation.compose)
             implementation(libs.screen.size)
+
+
 
             // Koin
             api(libs.koin.core)

@@ -35,6 +35,12 @@ fun FalconScreen(
 
     FalconInfoTwoRowListView(uiState.falconInfo, paddingValues)
 
+    if (uiState.error > 0) {
+        NetworkError {
+
+        }
+    }
+
 //    LazyColumn(
 //        modifier = Modifier.fillMaxWidth(),
 //        verticalArrangement = Arrangement.spacedBy(64.dp),
