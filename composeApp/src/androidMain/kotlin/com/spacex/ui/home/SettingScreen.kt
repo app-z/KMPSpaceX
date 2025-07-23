@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -15,11 +15,10 @@ import com.spacex.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    rootNavController: NavController, paddingValues: PaddingValues
+fun SettingScreen(
+    rootNavController: NavController,
+    paddingValues: PaddingValues
 ) {
-    var name by remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,7 +29,7 @@ fun HomeScreen(
         TopAppBar(
             title = {
                 Text(
-                    text = "Home",
+                    text = "Setting",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -40,20 +39,11 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        TextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text(text = "Enter the name") }
-        )
-
         Button(onClick = {
-            rootNavController.currentBackStackEntry?.savedStateHandle?.apply {
-                set("name", name)
-            }
-            rootNavController.navigate(Routes.HomeDetail.route)
+            rootNavController.navigate(Routes.SettingDetail.route)
         }) {
             Text(
-                text = "Move to Home Detail Screen",
+                text = "Move to Setting Detail Screen",
                 fontSize = 20.sp
             )
         }
@@ -64,9 +54,8 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeDetailScreen(
+fun SettingDetailScreen(
     rootNavController: NavController,
-    name: String
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -76,7 +65,7 @@ fun HomeDetailScreen(
         TopAppBar(
             title = {
                 Text(
-                    text = "Home Detail",
+                    text = "Setting Detail",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -91,12 +80,5 @@ fun HomeDetailScreen(
                 }
             }
         )
-
-        Text(
-            text = "Name = $name",
-            fontSize = 20.sp
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
     }
 }

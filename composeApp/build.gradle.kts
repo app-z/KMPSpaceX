@@ -40,9 +40,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             //            implementation (libs.androidx.navigation.compose)
             implementation(libs.androidx.material.icons.extended)
-            implementation(libs.androidx.navigation3.runtime)
-            implementation(libs.androidx.navigation3.ui)
-            implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+//            implementation(libs.androidx.navigation3.runtime)
+//            implementation(libs.androidx.navigation3.ui)
+//            implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
             implementation(libs.ktor.client.android)
             implementation(libs.koin.androidx.compose)
@@ -70,7 +70,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network)
             implementation(libs.navigation.compose)
-
+            implementation(libs.screen.size)
 
         }
 

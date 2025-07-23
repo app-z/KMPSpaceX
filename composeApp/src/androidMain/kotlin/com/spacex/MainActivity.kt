@@ -6,8 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation3.runtime.NavKey
-import kotlinx.serialization.Serializable
+import com.spacex.ui.home.MainScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -16,8 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            ///App()
-            AppNavigation()
+            MainScreen()
         }
     }
 }
@@ -25,5 +23,5 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    AppNavigation()
+    MainScreen()
 }

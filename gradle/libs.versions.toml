@@ -30,6 +30,8 @@ sqlite = "2.5.2"
 coilVersion = "3.3.0"
 
 navigationCompose = "2.8.0-alpha13"
+size = "0.5.0"
+material3WindowSize = "0.5.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -51,7 +53,9 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
 
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+# window-size-class-multiplatform = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSize" }
 
+screen-size = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "size" }
 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
