@@ -26,12 +26,10 @@ import com.spacex.repository.FalconRepository
 import com.spacex.repository.OnlineFalconRepository
 import com.spacex.utils.ERROR_LOADING_DATA
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainViewModel(
@@ -39,38 +37,64 @@ class MainViewModel(
     val onlineRepository: OnlineFalconRepository
 ) : ViewModel() {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val uiState: StateFlow<HomeUiState> =
-        repository
-            .loadData()
-            .transformLatest {
-                emit(
-                    if (it.isEmpty()) {
-                        val onlineRes = getOnlineFalcons()
-                        if (onlineRes.isEmpty()) {
-                            HomeUiState(error = ERROR_LOADING_DATA)
-                        } else {
-                            HomeUiState(
-                                getOnlineFalcons()
-                                    .map { rocketsResult ->
-                                        rocketsResult.mapToDomain()
-                                    }
-                            )
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            repository.loadData().collect {
+                falconEntities ->
+                if (falconEntities.isEmpty()) {
+                    val res = onlineRepository.getData(0)
+                    if (res.isSuccess) {
+                        res.map { rocketsResults ->
+                            repository.insertFalcons(rocketsResults.map {
+                                it.mapToEntity()
+                            })
+                            _uiState.emit(HomeUiState(rocketsResults.map { it.mapToDomain() }))
                         }
                     } else {
-                        HomeUiState(
-                            falconInfo = it.map { falconEntity ->
-                                falconEntity.mapToDomain()
-                            }
-                        )
+                        _uiState.emit(HomeUiState(error = ERROR_LOADING_DATA))
                     }
-                )
+                } else {
+                    _uiState.emit(HomeUiState(falconEntities.map { it.mapToDomain() }))
+                }
             }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = HomeUiState(),
-            )
+        }
+    }
+
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    val uiState: StateFlow<HomeUiState> =
+//        repository
+//            .loadData()
+//            .transformLatest {
+//                emit(
+//                    if (it.isEmpty()) {
+//                        val onlineRes = getOnlineFalcons()
+//                        if (onlineRes.isEmpty()) {
+//                            HomeUiState(error = ERROR_LOADING_DATA)
+//                        } else {
+//                            HomeUiState(
+//                                getOnlineFalcons()
+//                                    .map { rocketsResult ->
+//                                        rocketsResult.mapToDomain()
+//                                    }
+//                            )
+//                        }
+//                    } else {
+//                        HomeUiState(
+//                            falconInfo = it.map { falconEntity ->
+//                                falconEntity.mapToDomain()
+//                            }
+//                        )
+//                    }
+//                )
+//            }
+//            .stateIn(
+//                scope = viewModelScope,
+//                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+//                initialValue = HomeUiState(),
+//            )
 
     suspend fun getOnlineFalcons(): List<RocketsResult> {
         return withContext(Dispatchers.IO) {
@@ -89,12 +113,12 @@ class MainViewModel(
 
 }
 
-    /**
-     * Ui State for the home screen
-     */
-    data class HomeUiState(
-        val falconInfo: List<FalconInfo> = listOf(),
-        val error: Int = 0
-    )
+/**
+ * Ui State for the home screen
+ */
+data class HomeUiState(
+    val falconInfo: List<FalconInfo> = listOf(),
+    val error: Int = 0
+)
 
-    private const val TIMEOUT_MILLIS = 5_000L
+private const val TIMEOUT_MILLIS = 5_000L
