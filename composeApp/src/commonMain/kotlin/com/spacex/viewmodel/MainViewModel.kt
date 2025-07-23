@@ -24,11 +24,14 @@ import com.spacex.model.FalconInfo
 import com.spacex.model.RocketsResult
 import com.spacex.repository.FalconRepository
 import com.spacex.repository.OnlineFalconRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.withContext
 
 class MainViewModel(
     val repository: FalconRepository,
@@ -63,18 +66,19 @@ class MainViewModel(
                 initialValue = HomeUiState(),
             )
 
-
     suspend fun getOnlineFalcons(): List<RocketsResult> {
-        val res = onlineRepository.getData(0)
-        if (res.isSuccess) {
-            res.map { rocketsResults ->
-                repository.insertFalcons(rocketsResults.map {
-                    it.mapToEntity()
-                })
-                return rocketsResults
+        return withContext(Dispatchers.IO) {
+            val res = onlineRepository.getData(0)
+            if (res.isSuccess) {
+                res.map { rocketsResults ->
+                    repository.insertFalcons(rocketsResults.map {
+                        it.mapToEntity()
+                    })
+                    rocketsResults
+                }
             }
+            emptyList()
         }
-        return emptyList()
     }
 
 }
