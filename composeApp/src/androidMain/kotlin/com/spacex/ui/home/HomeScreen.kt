@@ -1,0 +1,134 @@
+package com.spacex.ui.home
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.spacex.di.App
+import com.spacex.model.FalconInfo
+import com.spacex.viewmodel.MainViewModel
+
+@Composable
+fun HomeScreen(title: String) {
+
+    val app = LocalContext.current.applicationContext as App
+    val extras = remember(app) {
+        val container = app.container
+        MainViewModel.creationExtras(container)
+    }
+
+    val viewModel: MainViewModel = viewModel(
+        factory = MainViewModel.Factory,
+        extras = extras,
+    )
+
+    val uiState by viewModel.uiState.collectAsState()
+
+
+    Text(title)
+
+    FalconInfoTwoRowListView(uiState.falconInfo)
+
+//    LazyColumn(
+//        modifier = Modifier.fillMaxWidth(),
+//        verticalArrangement = Arrangement.spacedBy(64.dp),
+//    ) {
+//        items(items = uiState.falconInfo, key = { it.id }) { item ->
+//            FalconInfoCard(item)
+//        }
+//        // Support edge-to-edge (required on Android 15)
+//        // https://developer.android.com/develop/ui/compose/layouts/insets#inset-size
+//        item {
+//            Spacer(
+//                Modifier.windowInsetsBottomHeight(
+//                    WindowInsets.systemBars,
+//                ),
+//            )
+//        }
+//    }
+}
+
+@Composable
+fun FalconInfoTwoRowListView(falconInfos: List<FalconInfo>) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        contentPadding = PaddingValues(
+            start = 12.dp,
+            top = 16.dp,
+            end = 12.dp,
+            bottom = 16.dp
+        ),
+        content = {
+            items(falconInfos.size) { index ->
+                FalconInfoCard2(falconInfos[index],
+                    index,
+                    onClick = {it})
+            }
+        })
+}
+
+
+@Composable
+fun FalconInfoItem(
+    item: FalconInfo,
+    onAddToCart: (fruittie: FalconInfo) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = item.name,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = item.name,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Button(onClick = { onAddToCart(item) }) {
+                Text( "Add"
+                    //stringResource(R.string.add)
+               )
+            }
+        }
+    }
+}
+
