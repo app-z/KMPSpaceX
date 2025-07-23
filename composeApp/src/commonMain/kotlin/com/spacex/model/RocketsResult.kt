@@ -66,20 +66,3 @@ data class Links (
     @SerialName("wikipedia"  ) var wikipedia : String? = null
 
 )
-
-
-// TODO: Delete @Parcelable because remembersaveable don`t use anymore.
-// val s: MutableState<FalconInfo> = rememberSaveable{ mutableStateOf(FalconInfo(null)) }
-//
-//val s: MutableState<List<FalconInfo>> = rememberSaveable{ mutableStateOf(listOf(FalconInfo(null))) }
-//
-//var initialState = ResponseResult.Loading
-//
-//if (s.value.isEmpty()) {
-//    initialState = ResponseResult.Loading
-//} else {
-//    ResponseResult.Success(s)
-//}
-//
-// LaunchedEffect(...
-// How about Pagenation?
