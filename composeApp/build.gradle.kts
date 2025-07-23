@@ -38,13 +38,12 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            //            implementation (libs.androidx.navigation.compose)
-            implementation(libs.androidx.material.icons.extended)
-            implementation(libs.androidx.navigation3.runtime)
-            implementation(libs.androidx.navigation3.ui)
-            implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
             implementation(libs.ktor.client.android)
+            implementation(libs.koin.androidx.compose)
+
+            // Koin
+            implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
 
         }
@@ -56,13 +55,16 @@ kotlin {
 
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.materialIconsExtended)
+
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.androidx.data.store.core)
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.koin.core)
             implementation(libs.androidx.room.runtime)
 
             implementation(libs.sqlite.bundled)
@@ -70,7 +72,15 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network)
             implementation(libs.navigation.compose)
+            implementation(libs.screen.size)
 
+
+
+            // Koin
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.composeVM)
+            implementation(libs.ktor.logging)
 
         }
 

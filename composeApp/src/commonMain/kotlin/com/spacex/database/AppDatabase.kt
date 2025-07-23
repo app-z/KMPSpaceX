@@ -19,9 +19,9 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
-import com.spacex.entity.FalconEntity
+import com.spacex.model.FalconEntity
 
-@Database(entities = [FalconEntity::class], version = 1)
+@Database(entities = [FalconEntity::class], version = 2)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun falconDao(): SpaceXDao
@@ -32,5 +32,3 @@ abstract class AppDatabase : RoomDatabase() {
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
     override fun initialize(): AppDatabase
 }
-
-internal const val DB_FILE_NAME = "spacex.db"

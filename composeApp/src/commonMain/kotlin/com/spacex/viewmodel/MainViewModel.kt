@@ -17,94 +17,207 @@
 package com.spacex.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.MutableCreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.spacex.DataRepository
-import com.spacex.SampleData
-import com.spacex.di.AppContainer
-import com.spacex.entity.mapToDomain
-import com.spacex.model.FalconInfo
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.spacex.model.FalconUiState
+import com.spacex.model.mapToDomain
+import com.spacex.model.mapToEntity
+import com.spacex.repository.FalconRepository
+import com.spacex.repository.OnlineFalconRepository
+import com.spacex.utils.AppPreferences
+import com.spacex.utils.AppPreferences.Companion.CARD_MODE
+import com.spacex.utils.NetworkResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModel(
-    private val repository: DataRepository,
-) : ViewModel() {
+    val repository: FalconRepository,
+    val onlineRepository: OnlineFalconRepository,
+    val appPreferences: AppPreferences
+) : IFalconsViewModel<FalconUiState>, ViewModel() {
 
-    val uiState: StateFlow<HomeUiState> =
-        repository
-            .getData()
-            .transformLatest {
-                    emit(
-                        if (it.isEmpty()) {
-                            HomeUiState(SampleData.getRockets())
-                        } else {
-                            HomeUiState(
-                                falconInfo = it.map { falconEntity ->
-                                    falconEntity.mapToDomain()
-                                }
-                            )
-                        }
-                    )
-            }
+    private val _uiState =
+        MutableStateFlow<FalconUiState>(
+            FalconUiState(networkResponse = NetworkResponse.Loading)
+        )
+    override val uiState = _uiState.asStateFlow()
+
+    val rowMode: StateFlow<String> =
+        appPreferences.getRowModeFlow()
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = HomeUiState(),
+                initialValue = CARD_MODE,
             )
 
-    companion object {
-        val APP_CONTAINER_KEY = CreationExtras.Key<AppContainer>()
-
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val appContainer = this[APP_CONTAINER_KEY] as AppContainer
-                val repository = appContainer.dataRepository
-                MainViewModel(repository = repository)
-            }
-        }
-
-        /**
-         * Helper function to prepare CreationExtras.
-         *
-         * USAGE:
-         *
-         * val mainViewModel: MainViewModel = ViewModelProvider.create(
-         *  owner = this as ViewModelStoreOwner,
-         *  factory = MainViewModel.Factory,
-         *  extras = MainViewModel.newCreationExtras(appContainer),
-         * )[MainViewModel::class]
-         */
-        fun creationExtras(appContainer: AppContainer): CreationExtras =
-            MutableCreationExtras().apply {
-                set(APP_CONTAINER_KEY, appContainer)
-            }
-    }
-
-    fun addItemToCart(fruittie: FalconInfo) {
+    init {
         viewModelScope.launch {
-//            repository.addToCart(fruittie)
+            rowMode.collect {
+                updateCurrentRowMode(it)
+            }
         }
     }
+
+    fun updateCurrentRowMode(mode: String) {
+        _uiState.update {
+            _uiState.value.copy(
+                rowMode = mode
+            )
+        }
+    }
+
+    override fun getFalcons() {
+        viewModelScope.launch {
+
+            repository.loadData().collect { falconEntities ->
+                if (falconEntities.isEmpty()) {
+
+                    showLoaderState()
+
+
+                    val res = onlineRepository.getData(0)
+                    if (res.isSuccess) {
+                        res.map { rocketsResults ->
+                            withContext(Dispatchers.IO) {
+                                repository.insertFalcons(rocketsResults.map {
+                                    it.mapToEntity()
+                                })
+                            }
+                            _uiState.update {
+                                _uiState.value.copy(
+                                    NetworkResponse.Success(rocketsResults.map { it.mapToDomain() })
+                                )
+                            }
+                        }
+                    } else {
+                        if (res.isFailure) {
+                            _uiState.emit(
+                                _uiState.value.copy(
+                                    NetworkResponse.Error(
+                                        res.exceptionOrNull()?.message ?: "Error throw"
+                                    )
+                                )
+                            )
+                        } else {
+
+                            _uiState.emit(
+                                _uiState.value.copy(
+                                    NetworkResponse.Error("Unknown network error")
+                                )
+                            )
+                        }
+
+                    }
+                } else {
+                    _uiState.update {
+                        _uiState.value.copy(
+                            NetworkResponse.Success((falconEntities.map { it.mapToDomain() }))
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
+    override fun getFilteredFalcons(filter: String) {
+        viewModelScope.launch {
+
+            showLoaderState()
+
+            repository.loadFilteredData(filter = filter)
+                .collect { falconEntities ->
+                    _uiState.update {
+                        _uiState.value.copy(
+                            if (falconEntities.isEmpty()) {
+                                NetworkResponse.Empty
+                            } else {
+                                NetworkResponse.Success(
+                                    falconEntities.map {
+                                        it.mapToDomain()
+                                    }
+                                )
+                            }
+                        )
+                    }
+                }
+        }
+    }
+
+    private suspend fun showLoaderState() {
+        _uiState.emit(
+            _uiState.value.copy(networkResponse = NetworkResponse.Loading)
+        )
+    }
+
+    companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
+    }
+
+
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    val uiState: StateFlow<HomeUiState> =
+//        repository
+//            .loadData()
+//            .transformLatest {
+//                emit(
+//                    if (it.isEmpty()) {
+//                        val onlineRes = getOnlineFalcons()
+//                        if (onlineRes.isEmpty()) {
+//                            HomeUiState(error = ERROR_LOADING_DATA)
+//                        } else {
+//                            HomeUiState(
+//                                getOnlineFalcons()
+//                                    .map { rocketsResult ->
+//                                        rocketsResult.mapToDomain()
+//                                    }
+//                            )
+//                        }
+//                    } else {
+//                        HomeUiState(
+//                            falconInfo = it.map { falconEntity ->
+//                                falconEntity.mapToDomain()
+//                            }
+//                        )
+//                    }
+//                )
+//            }
+//            .stateIn(
+//                scope = viewModelScope,
+//                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+//                initialValue = HomeUiState(),
+//            )
+//
+//    suspend fun getOnlineFalcons(): List<RocketsResult> {
+//        return withContext(Dispatchers.IO) {
+//            val res = onlineRepository.getData(0)
+//            if (res.isSuccess) {
+//                res.map { rocketsResults ->
+//                    repository.insertFalcons(rocketsResults.map {
+//                        it.mapToEntity()
+//                    })
+//                    rocketsResults
+//                }
+//            }
+//            emptyList()
+//        }
+//    }
 
 }
 
-/**
- * Ui State for the home screen
- */
-data class HomeUiState(
-    val falconInfo: List<FalconInfo> = listOf(),
-)
-
-private const val TIMEOUT_MILLIS = 5_000L
+///**
+// * Ui State for the home screen
+// */
+//data class HomeUiState(
+//    val falconInfo: List<FalconInfo> = listOf(),
+//    val error: Int = 0
+//)
+//
+//private const val TIMEOUT_MILLIS = 5_000L
