@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.spacex.database
+package com.spacex.utils
 
-import androidx.room.ConstructedBy
-import androidx.room.Database
+import android.app.Application
+import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.RoomDatabaseConstructor
-import com.spacex.model.FalconEntity
+import com.spacex.database.AppDatabase
+import org.koin.mp.KoinPlatform
 
-@Database(entities = [FalconEntity::class], version = 2)
-@ConstructedBy(AppDatabaseConstructor::class)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun falconDao(): SpaceXDao
-}
-
-// The Room compiler generates the `actual` implementations.
-@Suppress("NO_ACTUAL_FOR_EXPECT")
-expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
-    override fun initialize(): AppDatabase
+actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+    val appContext = KoinPlatform.getKoin().get<Application>()
+    val dbFile = appContext.getDatabasePath(DB_Name)
+    return Room.databaseBuilder<AppDatabase>(
+            context = appContext,
+            name = dbFile.absolutePath,
+        ).fallbackToDestructiveMigration()
 }
