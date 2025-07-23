@@ -1,5 +1,6 @@
 package com.spacex.entity
 
+import com.spacex.model.FalconEntity
 import com.spacex.model.RocketsResult
 import com.spacex.model.FalconInfo
 
@@ -22,3 +23,12 @@ fun RocketsResult.mapToEntity() = FalconEntity(
     pathLarge = links?.patch?.large
 )
 
+
+fun RocketsResult.mapToDomain() = FalconInfo(
+    id = id,
+    dateUtc = dateUtc,
+    name = name,
+    links = links?.article,
+    pathSmall = links?.patch?.small,
+    pathLarge = links?.patch?.large
+)

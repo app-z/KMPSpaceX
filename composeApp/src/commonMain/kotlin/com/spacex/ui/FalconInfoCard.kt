@@ -1,4 +1,4 @@
-package com.spacex.ui.home
+package com.spacex.ui
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize

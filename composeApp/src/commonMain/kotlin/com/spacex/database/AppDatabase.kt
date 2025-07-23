@@ -19,7 +19,7 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
-import com.spacex.entity.FalconEntity
+import com.spacex.model.FalconEntity
 
 @Database(entities = [FalconEntity::class], version = 1)
 @ConstructedBy(AppDatabaseConstructor::class)

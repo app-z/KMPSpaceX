@@ -5,31 +5,21 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Rocket
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Rocket
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
@@ -37,11 +27,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.spacex.ui.home.FalconScreen
-import com.spacex.ui.home.HomeDetailScreen
-import com.spacex.ui.home.HomeScreen
-import com.spacex.ui.home.SettingDetailScreen
-import com.spacex.ui.home.SettingScreen
+import com.spacex.ui.FalconScreen
+import com.spacex.ui.HomeDetailScreen
+import com.spacex.ui.HomeScreen
+import com.spacex.ui.SettingDetailScreen
+import com.spacex.ui.SettingScreen
 
 
 object Graph {
@@ -179,7 +169,7 @@ fun NavGraphBuilder.mainNavGraph(
     innerPadding: PaddingValues
 ) {
     navigation(
-        startDestination = Routes.Falcons.route,
+        startDestination = Routes.Home.route,
         route = Graph.NAVIGATION_BAR_SCREEN_GRAPH
     ) {
         composable(route = Routes.Falcons.route) {

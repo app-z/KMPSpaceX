@@ -1,4 +1,4 @@
-package com.spacex.ui.home
+package com.spacex.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,13 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kmpspacex.composeapp.generated.resources.Res
 import kmpspacex.composeapp.generated.resources.network_error_description
 import kmpspacex.composeapp.generated.resources.network_error_retry_button_text
 import kmpspacex.composeapp.generated.resources.network_error_title
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun NetworkError(
@@ -50,7 +50,7 @@ fun NetworkError(
     }
 }
 
-@Preview(showBackground = true)
+@Preview()
 @Composable
 fun NetworkErrorPreview() {
     NetworkError(modifier = Modifier, onRetryButtonClick = {})

@@ -1,4 +1,4 @@
-package com.spacex.ui.home
+package com.spacex.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,30 +16,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.spacex.di.App
 import com.spacex.model.FalconInfo
 import com.spacex.viewmodel.MainViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun FalconScreen(
-    rootNavController: NavController, paddingValues: PaddingValues
-) {
+    rootNavController: NavController,
+    paddingValues: PaddingValues) {
 
-    val app = LocalContext.current.applicationContext as App
-    val extras = remember(app) {
-        val container = app.container
-        MainViewModel.creationExtras(container)
-    }
-
-    val viewModel: MainViewModel = viewModel(
-        factory = MainViewModel.Factory,
-        extras = extras,
-    )
+    val viewModel = koinViewModel<MainViewModel>()
 
     val uiState by viewModel.uiState.collectAsState()
 

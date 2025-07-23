@@ -17,43 +17,45 @@
 package com.spacex.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.MutableCreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.spacex.DataRepository
-import com.spacex.SampleData
-import com.spacex.di.AppContainer
 import com.spacex.entity.mapToDomain
+import com.spacex.entity.mapToEntity
 import com.spacex.model.FalconInfo
+import com.spacex.model.RocketsResult
+import com.spacex.repository.FalconRepository
+import com.spacex.repository.OnlineFalconRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModel(
-    private val repository: DataRepository,
+    val repository: FalconRepository,
+    val onlineRepository: OnlineFalconRepository
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<HomeUiState> =
         repository
-            .getData()
+            .loadData()
             .transformLatest {
-                    emit(
-                        if (it.isEmpty()) {
-                            HomeUiState(SampleData.getRockets()) /// delete it!
-                        } else {
-                            HomeUiState(
-                                falconInfo = it.map { falconEntity ->
-                                    falconEntity.mapToDomain()
+                emit(
+                    if (it.isEmpty()) {
+                        HomeUiState(
+                            getOnlineFalcons()
+                                .map {
+                                    rocketsResult -> rocketsResult.mapToDomain()
                                 }
-                            )
-                        }
-                    )
+                        )
+                    } else {
+                        HomeUiState(
+                            falconInfo = it.map { falconEntity ->
+                                falconEntity.mapToDomain()
+                            }
+                        )
+                    }
+                )
             }
             .stateIn(
                 scope = viewModelScope,
@@ -61,40 +63,27 @@ class MainViewModel(
                 initialValue = HomeUiState(),
             )
 
-    companion object {
-        val APP_CONTAINER_KEY = CreationExtras.Key<AppContainer>()
 
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val appContainer = this[APP_CONTAINER_KEY] as AppContainer
-                val repository = appContainer.dataRepository
-                MainViewModel(repository = repository)
+    suspend fun getOnlineFalcons(): List<RocketsResult> {
+        val res = onlineRepository.getData(0)
+        if (res.isSuccess) {
+            res.map { rocketsResults ->
+                repository.insertFalcons(rocketsResults.map {
+                    it.mapToEntity()
+                })
+                return rocketsResults
             }
         }
-
-        /**
-         * Helper function to prepare CreationExtras.
-         *
-         * USAGE:
-         *
-         * val mainViewModel: MainViewModel = ViewModelProvider.create(
-         *  owner = this as ViewModelStoreOwner,
-         *  factory = MainViewModel.Factory,
-         *  extras = MainViewModel.newCreationExtras(appContainer),
-         * )[MainViewModel::class]
-         */
-        fun creationExtras(appContainer: AppContainer): CreationExtras =
-            MutableCreationExtras().apply {
-                set(APP_CONTAINER_KEY, appContainer)
-            }
+        return emptyList()
     }
+
 }
 
-/**
- * Ui State for the home screen
- */
-data class HomeUiState(
-    val falconInfo: List<FalconInfo> = listOf(),
-)
+    /**
+     * Ui State for the home screen
+     */
+    data class HomeUiState(
+        val falconInfo: List<FalconInfo> = listOf(),
+    )
 
-private const val TIMEOUT_MILLIS = 5_000L
+    private const val TIMEOUT_MILLIS = 5_000L

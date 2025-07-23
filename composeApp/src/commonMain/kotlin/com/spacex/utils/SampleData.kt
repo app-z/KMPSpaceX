@@ -1,7 +1,6 @@
-package com.spacex
+package com.spacex.utils
 
 import com.spacex.model.FalconInfo
-
 
 class SampleData {
     companion object {

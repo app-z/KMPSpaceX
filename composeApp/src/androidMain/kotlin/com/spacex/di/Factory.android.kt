@@ -17,20 +17,20 @@ package com.spacex.di
 
 import android.app.Application
 import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.spacex.database.AppDatabase
 import com.spacex.database.DB_FILE_NAME
-import kotlinx.coroutines.Dispatchers
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.spacex.network.SpaceXApi
+import kotlinx.coroutines.Dispatchers
+import org.koin.mp.KoinPlatform
 
-actual class Factory(
-    private val app: Application,
-) {
+actual class Factory() {
     actual fun createRoomDatabase(): AppDatabase {
-        val dbFile = app.getDatabasePath(DB_FILE_NAME)
+        val appContext = KoinPlatform.getKoin().get<Application>()
+        val dbFile = appContext.getDatabasePath(DB_FILE_NAME)
         return Room
             .databaseBuilder<AppDatabase>(
-                context = app,
+                context = appContext,
                 name = dbFile.absolutePath,
             ).setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)

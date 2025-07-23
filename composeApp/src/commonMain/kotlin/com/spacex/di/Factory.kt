@@ -39,9 +39,7 @@ internal fun commonCreateApi(): SpaceXApi =
                 json(json, contentType = ContentType.Any)
             }
         },
-        // apiUrl = "https://android.github.io/kotlin-multiplatform-samples/fruitties-api",
-        apiUrl = "https://api.spacexdata.com/v4/launches"
-
+//        apiUrl = "https://api.spacexdata.com/v4/launches"
     )
 
 val json = Json { ignoreUnknownKeys = true }

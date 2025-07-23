@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.spacex.entity.FalconEntity
+import com.spacex.model.FalconEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,7 +17,7 @@ interface SpaceXDao {
     fun getRocket(id: Int): FalconEntity
 
     @Query("SELECT COUNT(*) as count FROM SpaceX")
-    suspend fun count(): Int
+    fun count(): Int
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
