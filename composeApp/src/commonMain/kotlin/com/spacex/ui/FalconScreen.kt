@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.spacex.model.FalconInfo
+import com.spacex.viewmodel.FalconsContract
 import com.spacex.viewmodel.MainViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -37,7 +38,7 @@ fun FalconScreen(
 
     if (uiState.error > 0) {
         NetworkError {
-
+            viewModel.setEvent(FalconsContract.Event.Retry)
         }
     }
 

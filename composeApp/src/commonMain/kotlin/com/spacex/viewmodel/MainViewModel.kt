@@ -21,29 +21,30 @@ import androidx.lifecycle.viewModelScope
 import com.spacex.entity.mapToDomain
 import com.spacex.entity.mapToEntity
 import com.spacex.model.FalconInfo
-import com.spacex.model.RocketsResult
 import com.spacex.repository.FalconRepository
 import com.spacex.repository.OnlineFalconRepository
 import com.spacex.utils.ERROR_LOADING_DATA
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainViewModel(
     val repository: FalconRepository,
     val onlineRepository: OnlineFalconRepository
-) : ViewModel() {
+) : BaseViewModel<FalconsContract.Event, FalconsContract.State, FalconsContract.Effect>() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
+        getRockets()
+    }
+
+    fun getRockets() {
+        setState { copy(isLoading = true, isError = false) }
+
         viewModelScope.launch {
-            repository.loadData().collect {
-                falconEntities ->
+            repository.loadData().collect { falconEntities ->
                 if (falconEntities.isEmpty()) {
                     val res = onlineRepository.getData(0)
                     if (res.isSuccess) {
@@ -54,6 +55,7 @@ class MainViewModel(
                             _uiState.emit(HomeUiState(rocketsResults.map { it.mapToDomain() }))
                         }
                     } else {
+                        //res.exceptionOrNull()
                         _uiState.emit(HomeUiState(error = ERROR_LOADING_DATA))
                     }
                 } else {
@@ -62,6 +64,22 @@ class MainViewModel(
             }
         }
     }
+
+    override fun setInitialState() = FalconsContract.State (
+        rockets = emptyList(),
+        isLoading = true,
+        isError = false
+    )
+
+    override fun handleEvents(event: FalconsContract.Event) {
+        when (event) {
+            is FalconsContract.Event.FalconSelection -> setEffect {
+                FalconsContract.Effect.Navigation.ToRocketInfo(event.rocket.id)
+            }
+            is FalconsContract.Event.Retry -> getRockets()
+        }
+    }
+
 
 //    @OptIn(ExperimentalCoroutinesApi::class)
 //    val uiState: StateFlow<HomeUiState> =
@@ -95,21 +113,21 @@ class MainViewModel(
 //                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
 //                initialValue = HomeUiState(),
 //            )
-
-    suspend fun getOnlineFalcons(): List<RocketsResult> {
-        return withContext(Dispatchers.IO) {
-            val res = onlineRepository.getData(0)
-            if (res.isSuccess) {
-                res.map { rocketsResults ->
-                    repository.insertFalcons(rocketsResults.map {
-                        it.mapToEntity()
-                    })
-                    rocketsResults
-                }
-            }
-            emptyList()
-        }
-    }
+//
+//    suspend fun getOnlineFalcons(): List<RocketsResult> {
+//        return withContext(Dispatchers.IO) {
+//            val res = onlineRepository.getData(0)
+//            if (res.isSuccess) {
+//                res.map { rocketsResults ->
+//                    repository.insertFalcons(rocketsResults.map {
+//                        it.mapToEntity()
+//                    })
+//                    rocketsResults
+//                }
+//            }
+//            emptyList()
+//        }
+//    }
 
 }
 
