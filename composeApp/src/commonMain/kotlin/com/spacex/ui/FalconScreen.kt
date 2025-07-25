@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.spacex.model.FalconInfo
+import com.spacex.navigation.Routes
 import com.spacex.ui.common.EmptyContent
 import com.spacex.ui.common.NetworkError
 import com.spacex.ui.common.ShimmerEffect
@@ -27,8 +28,11 @@ import com.spacex.viewmodel.MainViewModel
 import kmpspacex.composeapp.generated.resources.Res
 import kmpspacex.composeapp.generated.resources.ic_browse
 import kmpspacex.composeapp.generated.resources.no_data
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.text.set
 
 @Composable
 fun FalconScreen(
@@ -53,8 +57,16 @@ fun FalconScreen(
             val falconInfos = (uiState as NetworkResponse.Success<List<FalconInfo>>).data
             FalconInfoTwoRowListView(
                 falconInfos = falconInfos, paddingValues = paddingValues,
-                {
+                onRetry = {
                     viewModel.getFalcons()
+                },
+                onDetail = { falconInfo ->
+
+                rootNavController.currentBackStackEntry?.savedStateHandle?.apply {
+                        val jsonFalconInfo = Json.encodeToString(falconInfo)
+                        set("name", jsonFalconInfo)
+                    }
+                    rootNavController.navigate(Routes.FalconsDetail.route)
                 })
         }
     }
@@ -64,6 +76,7 @@ fun FalconScreen(
 fun FalconInfoTwoRowListView(
     falconInfos: List<FalconInfo>?,
     paddingValues: PaddingValues,
+    onDetail: (FalconInfo) -> (Unit),
     onRetry: () -> (Unit)
 ) {
 
@@ -86,7 +99,9 @@ fun FalconInfoTwoRowListView(
                     FalconInfoCard2(
                         falconInfos[index],
                         index,
-                        onClick = { it })
+                        onClick = {
+                            onDetail.invoke(falconInfos[index])
+                        })
                 }
             })
     }

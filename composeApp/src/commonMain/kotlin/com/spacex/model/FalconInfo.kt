@@ -1,5 +1,8 @@
 package com.spacex.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class FalconInfo(
     val id: String,
     val name: String,

@@ -27,11 +27,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.spacex.model.FalconInfo
 import com.spacex.ui.FalconScreen
+import com.spacex.ui.FalconsDetailScreen
 import com.spacex.ui.HomeDetailScreen
 import com.spacex.ui.HomeScreen
 import com.spacex.ui.SettingDetailScreen
 import com.spacex.ui.SettingScreen
+import kotlinx.serialization.json.Json
 
 
 object Graph {
@@ -40,6 +43,7 @@ object Graph {
 
 sealed class Routes(var route: String) {
     data object Falcons : Routes("falcons")
+    data object FalconsDetail : Routes("falconsDetail")
     data object Home : Routes("home")
     data object Setting : Routes("setting")
     data object HomeDetail : Routes("homeDetail")
@@ -160,6 +164,17 @@ fun RootNavGraph(
             route = Routes.SettingDetail.route,
         ) {
             SettingDetailScreen(rootNavController = rootNavController)
+        }
+        composable(
+            route = Routes.FalconsDetail.route,
+        ) {
+            rootNavController.previousBackStackEntry?.savedStateHandle?.get<String>("name")?.let {
+                    jsonFalconInfo ->
+                val falconInfo = Json.decodeFromString<FalconInfo>(jsonFalconInfo)
+                FalconsDetailScreen(rootNavController = rootNavController,
+                    falconInfo = falconInfo,
+                    paddingValues = innerPadding)
+            }
         }
     }
 }
