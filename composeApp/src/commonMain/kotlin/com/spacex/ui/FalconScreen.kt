@@ -13,33 +13,56 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.spacex.model.FalconInfo
+import com.spacex.utils.NetworkResponse
 import com.spacex.viewmodel.MainViewModel
+import kmpspacex.composeapp.generated.resources.Res
+import kmpspacex.composeapp.generated.resources.ic_browse
+import kmpspacex.composeapp.generated.resources.no_data
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun FalconScreen(
     rootNavController: NavController,
-    paddingValues: PaddingValues) {
+    paddingValues: PaddingValues
+) {
 
     val viewModel = koinViewModel<MainViewModel>()
 
     val uiState by viewModel.uiState.collectAsState()
 
-    FalconInfoTwoRowListView(uiState.falconInfo, paddingValues)
+    when (uiState) {
+        is NetworkResponse.Error -> NetworkError(onRetryButtonClick = {
+            viewModel.getFalcons()
+        })
 
-    if (uiState.error > 0) {
-        NetworkError {
-
+        is NetworkResponse.Idle -> {}
+        is NetworkResponse.Loading -> {}
+        is NetworkResponse.Success -> {
+            val falconInfos = (uiState as NetworkResponse.Success<List<FalconInfo>>).data
+            FalconInfoTwoRowListView(
+                falconInfos = falconInfos, paddingValues = paddingValues,
+                {
+                    viewModel.getFalcons()
+                })
         }
     }
+
+
+//    if (uiState.error > 0) {
+//        NetworkError {
+//
+//        }
+//    }
 
 //    LazyColumn(
 //        modifier = Modifier.fillMaxWidth(),
@@ -61,19 +84,35 @@ fun FalconScreen(
 }
 
 @Composable
-fun FalconInfoTwoRowListView(falconInfos: List<FalconInfo>, paddingValues: PaddingValues) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        contentPadding = paddingValues,
-        content = {
-            items(falconInfos.size) { index ->
-                FalconInfoCard2(falconInfos[index],
-                    index,
-                    onClick = {it})
+fun FalconInfoTwoRowListView(
+    falconInfos: List<FalconInfo>?,
+    paddingValues: PaddingValues,
+    onRetry: () -> (Unit)
+) {
+
+    if (falconInfos.isNullOrEmpty()) {
+        EmptyContent(
+            message = stringResource(Res.string.no_data),
+            icon = Res.drawable.ic_browse,
+            onRetryClick = {
+                onRetry.invoke()
             }
-        })
+        )
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            contentPadding = paddingValues,
+            content = {
+                items(falconInfos.size) { index ->
+                    FalconInfoCard2(
+                        falconInfos[index],
+                        index,
+                        onClick = { it })
+                }
+            })
+    }
 }
 
 
@@ -109,9 +148,10 @@ fun FalconInfoItem(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Button(onClick = { onAddToCart(item) }) {
-                Text( "Add"
+                Text(
+                    "Add"
                     //stringResource(R.string.add)
-               )
+                )
             }
         }
     }

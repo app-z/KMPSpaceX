@@ -24,11 +24,12 @@ import com.spacex.model.FalconInfo
 import com.spacex.model.RocketsResult
 import com.spacex.repository.FalconRepository
 import com.spacex.repository.OnlineFalconRepository
-import com.spacex.utils.ERROR_LOADING_DATA
+import com.spacex.utils.NetworkResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -37,13 +38,16 @@ class MainViewModel(
     val onlineRepository: OnlineFalconRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
+    private val _uiState =
+        MutableStateFlow<NetworkResponse<List<FalconInfo>>>(NetworkResponse.Loading)
     val uiState = _uiState.asStateFlow()
 
-    init {
+    fun getFalcons() {
         viewModelScope.launch {
-            repository.loadData().collect {
-                falconEntities ->
+
+            _uiState.emit(NetworkResponse.Loading)
+
+            repository.loadData().collect { falconEntities ->
                 if (falconEntities.isEmpty()) {
                     val res = onlineRepository.getData(0)
                     if (res.isSuccess) {
@@ -51,16 +55,33 @@ class MainViewModel(
                             repository.insertFalcons(rocketsResults.map {
                                 it.mapToEntity()
                             })
-                            _uiState.emit(HomeUiState(rocketsResults.map { it.mapToDomain() }))
+                            _uiState.update {
+                                NetworkResponse.Success(rocketsResults.map { it.mapToDomain() })
+                            }
                         }
                     } else {
-                        _uiState.emit(HomeUiState(error = ERROR_LOADING_DATA))
+                        if (res.isFailure) {
+                            _uiState.emit(
+                                NetworkResponse.Error(
+                                    res.exceptionOrNull()?.message ?: "Error throw"
+                                )
+                            )
+                        } else {
+                            _uiState.emit(NetworkResponse.Error("Unknown network error"))
+                        }
+
                     }
                 } else {
-                    _uiState.emit(HomeUiState(falconEntities.map { it.mapToDomain() }))
+                    _uiState.update {
+                        NetworkResponse.Success((falconEntities.map { it.mapToDomain() }))
+                    }
                 }
             }
         }
+    }
+
+    init {
+        getFalcons()
     }
 
 //    @OptIn(ExperimentalCoroutinesApi::class)
