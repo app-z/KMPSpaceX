@@ -13,15 +13,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.spacex.model.FalconInfo
+import com.spacex.ui.common.EmptyContent
+import com.spacex.ui.common.NetworkError
+import com.spacex.ui.common.ShimmerEffect
 import com.spacex.utils.NetworkResponse
 import com.spacex.viewmodel.MainViewModel
 import kmpspacex.composeapp.generated.resources.Res
@@ -46,7 +46,9 @@ fun FalconScreen(
         })
 
         is NetworkResponse.Idle -> {}
-        is NetworkResponse.Loading -> {}
+        is NetworkResponse.Loading -> {
+            ShimmerEffect()
+        }
         is NetworkResponse.Success -> {
             val falconInfos = (uiState as NetworkResponse.Success<List<FalconInfo>>).data
             FalconInfoTwoRowListView(

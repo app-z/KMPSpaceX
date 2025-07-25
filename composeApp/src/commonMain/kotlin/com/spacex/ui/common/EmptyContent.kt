@@ -1,4 +1,4 @@
-package com.spacex.ui
+package com.spacex.ui.common
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
