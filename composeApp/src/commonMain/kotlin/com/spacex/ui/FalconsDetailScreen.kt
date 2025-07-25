@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -28,7 +29,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.spacex.model.FalconInfo
+import com.spacex.viewmodel.FalconDetailViewModel
+import kmpspacex.composeapp.generated.resources.Res
+import kmpspacex.composeapp.generated.resources.ic_bookmark_filled
+import kmpspacex.composeapp.generated.resources.ic_bookmark_outlined
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +44,13 @@ fun FalconsDetailScreen(
     falconInfo: FalconInfo,
     paddingValues: PaddingValues
 ) {
+
+    val falconDetailViewModel = koinViewModel<FalconDetailViewModel>()
+
+    LaunchedEffect(Unit) {
+        falconDetailViewModel.isFalconBookMarked(falconInfo.id)
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -56,6 +70,19 @@ fun FalconsDetailScreen(
                         contentDescription = null,
                     )
                 }
+            },
+            actions = {
+                IconButton(onClick = {
+                    falconDetailViewModel.bookmarkArticle(falconInfo)
+                }) {
+                    Icon(
+                        painter = painterResource(
+                            if (falconDetailViewModel.isBookmarked) Res.drawable.ic_bookmark_filled
+                            else Res.drawable.ic_bookmark_outlined
+                        ),
+                        contentDescription = null,
+                    )
+                }
             }
         )
 
@@ -66,7 +93,7 @@ fun FalconsDetailScreen(
                 style = MaterialTheme.typography.headlineMedium + TextStyle(textAlign = TextAlign.Center),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
             )
 
             AsyncImage(
@@ -86,12 +113,13 @@ fun FalconsDetailScreen(
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Normal,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
             )
         }
 
     }
 }
+
 
 @Composable
 @Preview

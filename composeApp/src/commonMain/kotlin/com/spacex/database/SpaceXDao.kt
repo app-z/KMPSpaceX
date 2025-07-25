@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SpaceXDao {
 
-    @Query("SELECT * FROM SpaceX")
+    @Query("SELECT * FROM SpaceX ORDER BY id")
     fun getAllRockets(): Flow<List<FalconEntity>>
 
     @Query("SELECT * FROM SpaceX WHERE id = :id")
-    fun getRocket(id: Int): FalconEntity
+    fun getRocket(id: String): FalconEntity
 
     @Query("SELECT COUNT(*) as count FROM SpaceX")
     fun count(): Int
@@ -22,4 +22,9 @@ interface SpaceXDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllRockets(rockets: List<FalconEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertRocket(falcon: FalconEntity)
+
+
 }

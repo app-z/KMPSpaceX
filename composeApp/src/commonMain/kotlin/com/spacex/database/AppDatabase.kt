@@ -21,7 +21,7 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import com.spacex.model.FalconEntity
 
-@Database(entities = [FalconEntity::class], version = 1)
+@Database(entities = [FalconEntity::class], version = 2)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun falconDao(): SpaceXDao

@@ -11,6 +11,9 @@ data class FalconEntity(
     @ColumnInfo(name = "date_utc") var date_utc: String? = null,
     @ColumnInfo(name = "links") var links: String? = null,
     @ColumnInfo(name = "pathSmall") var pathSmall: String? = null,
-    @ColumnInfo(name = "pathLarge") var pathLarge: String? = null
+    @ColumnInfo(name = "pathLarge") var pathLarge: String? = null,
+
+    @ColumnInfo(name = "is_bookmark", defaultValue = "0") // Default to false (0)
+    var isBookMark: Boolean = false
 //    @ColumnInfo(name = "links") var links: Links? = Links(),
 )

@@ -18,8 +18,8 @@ package com.spacex.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spacex.entity.mapToDomain
-import com.spacex.entity.mapToEntity
+import com.spacex.model.mapToDomain
+import com.spacex.model.mapToEntity
 import com.spacex.model.FalconInfo
 import com.spacex.model.RocketsResult
 import com.spacex.repository.FalconRepository
@@ -27,7 +27,6 @@ import com.spacex.repository.OnlineFalconRepository
 import com.spacex.utils.NetworkResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -53,9 +52,11 @@ class MainViewModel(
                     val res = onlineRepository.getData(0)
                     if (res.isSuccess) {
                         res.map { rocketsResults ->
-                            repository.insertFalcons(rocketsResults.map {
-                                it.mapToEntity()
-                            })
+                            withContext(Dispatchers.IO) {
+                                repository.insertFalcons(rocketsResults.map {
+                                    it.mapToEntity()
+                                })
+                            }
                             _uiState.update {
                                 NetworkResponse.Success(rocketsResults.map { it.mapToDomain() })
                             }

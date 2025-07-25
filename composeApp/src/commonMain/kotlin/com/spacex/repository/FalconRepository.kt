@@ -12,25 +12,22 @@ class FalconRepository(
 
     fun insertFalcons(list: List<FalconEntity>) = falconDao.insertAllRockets(list)
 
-    fun getCount() : Int = falconDao.count()
+    fun getCount(): Int = falconDao.count()
 
+    fun bookmark(id: String) {
+        val falcon = falconDao.getRocket(id)
+        falcon.isBookMark = true
+        falconDao.insertRocket(falcon)
+    }
 
+    fun unBookmark(id: String) {
+        val falcon = falconDao.getRocket(id)
+        falcon.isBookMark = false
+        falconDao.insertRocket(falcon)
+    }
 
-//    suspend fun upsertArticle(article: Article) {
-//        newsDao.upsert(article)
-//    }
-//
-//    suspend fun deleteArticle(article: Article) {
-//        newsDao.delete(article)
-//    }
-//
-//    suspend fun deleteAllBookmark() {
-//        newsDao.deleteAllBookmark()
-//    }
-//
-//    fun getArticles() = falconDao.getArticles().flowOn(Dispatchers.IO)
-//
-//    suspend fun getArticle(articleId: String): Article? {
-//        return newsDao.getArticle(articleId = articleId)
-//    }
+    fun getRocket(id: String) : FalconEntity {
+        val falcon = falconDao.getRocket(id)
+        return falcon
+    }
 }

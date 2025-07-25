@@ -1,8 +1,4 @@
-package com.spacex.entity
-
-import com.spacex.model.FalconEntity
-import com.spacex.model.RocketsResult
-import com.spacex.model.FalconInfo
+package com.spacex.model
 
 
 fun FalconEntity.mapToDomain() = FalconInfo(
@@ -11,7 +7,8 @@ fun FalconEntity.mapToDomain() = FalconInfo(
     pathLarge = pathLarge,
     name = name,
     links = links,
-    dateUtc = date_utc
+    dateUtc = date_utc,
+    isBookMark = isBookMark
 )
 
 fun RocketsResult.mapToEntity() = FalconEntity(
@@ -20,7 +17,7 @@ fun RocketsResult.mapToEntity() = FalconEntity(
     name = name,
     links = links?.article,
     pathSmall = links?.patch?.small,
-    pathLarge = links?.patch?.large
+    pathLarge = links?.patch?.large,
 )
 
 

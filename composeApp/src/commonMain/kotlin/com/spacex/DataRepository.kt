@@ -17,7 +17,7 @@ package com.spacex
 
 import com.spacex.database.SpaceXDao
 import com.spacex.model.FalconEntity
-import com.spacex.entity.mapToEntity
+import com.spacex.model.mapToEntity
 import com.spacex.network.SpaceXApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
