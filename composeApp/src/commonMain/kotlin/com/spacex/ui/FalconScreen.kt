@@ -56,31 +56,6 @@ fun FalconScreen(
                 })
         }
     }
-
-
-//    if (uiState.error > 0) {
-//        NetworkError {
-//
-//        }
-//    }
-
-//    LazyColumn(
-//        modifier = Modifier.fillMaxWidth(),
-//        verticalArrangement = Arrangement.spacedBy(64.dp),
-//    ) {
-//        items(items = uiState.falconInfo, key = { it.id }) { item ->
-//            FalconInfoCard(item)
-//        }
-//        // Support edge-to-edge (required on Android 15)
-//        // https://developer.android.com/develop/ui/compose/layouts/insets#inset-size
-//        item {
-//            Spacer(
-//                Modifier.windowInsetsBottomHeight(
-//                    WindowInsets.systemBars,
-//                ),
-//            )
-//        }
-//    }
 }
 
 @Composable
