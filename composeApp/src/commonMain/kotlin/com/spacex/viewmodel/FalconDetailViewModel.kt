@@ -12,10 +12,15 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 
 class FalconDetailViewModel(
+    id: String,
     private val falconRepository: FalconRepository,
 ) : ViewModel() {
 
     var isBookmarked by mutableStateOf(false)
+
+    init {
+        isFalconBookMarked(id = id)
+    }
 
     fun isFalconBookMarked(id: String) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -36,6 +36,7 @@ import kmpspacex.composeapp.generated.resources.ic_bookmark_outlined
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun FalconsDetailScreen(
@@ -44,11 +45,12 @@ fun FalconsDetailScreen(
     paddingValues: PaddingValues
 ) {
 
-    val viewModel = koinViewModel<FalconDetailViewModel>()
-
-    LaunchedEffect(Unit) {
-        viewModel.isFalconBookMarked(falconInfo.id)
-    }
+    val viewModel =
+        koinViewModel<FalconDetailViewModel>(
+            parameters = {
+                parametersOf(falconInfo.id)
+            }
+        )
 
     FalconsDetailScreenContent(
         rootNavController = rootNavController,
