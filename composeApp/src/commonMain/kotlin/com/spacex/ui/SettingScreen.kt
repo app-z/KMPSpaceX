@@ -18,18 +18,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import com.spacex.utils.AppPreferences.Companion.CARD_MODE
 import com.spacex.utils.AppPreferences.Companion.ROW_MODE
@@ -46,6 +40,7 @@ fun SettingScreen(
 
 
     val viewModel = koinViewModel<SettingsViewModel>()
+
     val rowModeState = viewModel.modeState.collectAsStateWithLifecycle()
 
 //    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
