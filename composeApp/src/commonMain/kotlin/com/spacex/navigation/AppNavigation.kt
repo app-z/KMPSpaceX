@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Rocket
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Rocket
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +31,6 @@ import com.spacex.model.FalconInfo
 import com.spacex.ui.FalconScreen
 import com.spacex.ui.FalconsDetailScreen
 import com.spacex.ui.HomeDetailScreen
-import com.spacex.ui.HomeScreen
 import com.spacex.ui.MapScreen
 import com.spacex.ui.SettingDetailScreen
 import com.spacex.ui.SettingScreen
@@ -194,7 +191,7 @@ fun NavGraphBuilder.mainNavGraph(
             FalconScreen(rootNavController = rootNavController, paddingValues = innerPadding)
         }
         composable(route = Routes.Home.route) {
-            MapScreen()
+            MapScreen(paddingValues = innerPadding)
             //HomeScreen(rootNavController = rootNavController, paddingValues = innerPadding)
         }
         composable(route = Routes.Setting.route) {
