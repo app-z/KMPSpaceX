@@ -34,6 +34,7 @@ import com.spacex.ui.FalconScreen
 import com.spacex.ui.FalconsDetailScreen
 import com.spacex.ui.HomeDetailScreen
 import com.spacex.ui.HomeScreen
+import com.spacex.ui.MapScreen
 import com.spacex.ui.SettingDetailScreen
 import com.spacex.ui.SettingScreen
 import kotlinx.serialization.json.Json
@@ -193,7 +194,8 @@ fun NavGraphBuilder.mainNavGraph(
             FalconScreen(rootNavController = rootNavController, paddingValues = innerPadding)
         }
         composable(route = Routes.Home.route) {
-            HomeScreen(rootNavController = rootNavController, paddingValues = innerPadding)
+            MapScreen()
+            //HomeScreen(rootNavController = rootNavController, paddingValues = innerPadding)
         }
         composable(route = Routes.Setting.route) {
             SettingScreen(rootNavController = rootNavController, paddingValues = innerPadding)

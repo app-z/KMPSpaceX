@@ -1,8 +1,7 @@
-import com.android.build.api.dsl.androidLibrary
-import org.gradle.kotlin.dsl.implementation
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -12,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.buildkonfig)
 }
 
 kotlin {
@@ -21,7 +21,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -32,9 +32,15 @@ kotlin {
             isStatic = true
         }
     }
-    
+
+//    cocoapods {
+//        pod("YandexMapsMobile") {
+//            version = "<mapkit-version>"
+//        }
+//    }
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -75,12 +81,14 @@ kotlin {
             implementation(libs.screen.size)
 
 
-
             // Koin
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.composeVM)
             implementation(libs.ktor.logging)
+
+            implementation("ru.sulgik.mapkit:yandex-mapkit-kmp:0.3.1") // main module
+            implementation("ru.sulgik.mapkit:yandex-mapkit-kmp-compose:0.3.1") // optional compose support
 
         }
 
@@ -119,6 +127,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -133,4 +145,21 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
+buildkonfig {
+    packageName = "com.spacex"
+    val mapKitKey = "MAPKIT_KEY"
+    defaultConfigs {
 
+        val props = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { props.load(it) }
+        }
+
+        val apiKey: String = props.getProperty("MAPKIT_KEY") ?: error("MAPKIT_KEY not found in local.properties")
+
+        buildConfigField(
+            Type.STRING, mapKitKey, apiKey
+        )
+    }
+}
