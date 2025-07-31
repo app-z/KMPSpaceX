@@ -18,21 +18,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import com.spacex.utils.AppPreferences.Companion.CARD_MODE
 import com.spacex.utils.AppPreferences.Companion.ROW_MODE
+import com.spacex.utils.Theme
 import com.spacex.viewmodel.SettingsViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -41,12 +37,14 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SettingScreen(
     rootNavController: NavController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    viewModel: SettingsViewModel
 ) {
 
 
-    val viewModel = koinViewModel<SettingsViewModel>()
+//    val viewModel = koinViewModel<SettingsViewModel>()
     val rowModeState = viewModel.modeState.collectAsStateWithLifecycle()
+    val currentTheme by viewModel.currentTheme.collectAsStateWithLifecycle()
 
 //    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 //    val rowModeState = viewModel.modeState
@@ -59,19 +57,30 @@ fun SettingScreen(
 //        )
 
     SettingScreenContent(
-        paddingValues, rowModeState, onSetRowMode =
+        paddingValues = paddingValues,
+        rowModeState = rowModeState,
+        currentTheme = currentTheme,
+        onSetRowMode =
             { mode ->
                 viewModel.setRowModeState(mode)
+            },
+        onChangeTheme = { themeDark ->
+            if (themeDark) {
+                viewModel.changeThemeMode(Theme.DARK_MODE.name)
+            } else {
+                viewModel.changeThemeMode(Theme.LIGHT_MODE.name)
             }
+        }
     )
-
 }
 
 @Composable
 fun SettingScreenContent(
     paddingValues: PaddingValues,
     rowModeState: State<String?>,
-    onSetRowMode: (rowMode: String) -> Unit
+    currentTheme: String?,
+    onSetRowMode: (rowMode: String) -> Unit,
+    onChangeTheme: (themeDark: Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(paddingValues)
@@ -85,7 +94,7 @@ fun SettingScreenContent(
             color = MaterialTheme.colorScheme.onBackground
         )
         Row(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier
                 .fillMaxWidth()
         ) {
 
@@ -104,6 +113,26 @@ fun SettingScreenContent(
                 modifier = Modifier.padding(16.dp)
             )
         }
+
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            Text(
+                modifier = Modifier.padding(16.dp)
+                    .align(Alignment.CenterVertically)
+                    .weight(1f),
+                text = "Dark Theme"
+            )
+
+            Checkbox(
+                checked = currentTheme == Theme.DARK_MODE.name,
+                onCheckedChange = {
+                    onChangeTheme.invoke(it)
+                },
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 //            rootNavController.navigate(Routes.SettingDetail.route)
 
@@ -116,7 +145,9 @@ fun PreviewSettings1() {
     SettingScreenContent(
         paddingValues = PaddingValues(),
         rowModeState = mutableStateOf<String>(CARD_MODE),
-        onSetRowMode = {}
+        currentTheme = Theme.DARK_MODE.name,
+        onSetRowMode = {},
+        onChangeTheme = {}
     )
 }
 
@@ -126,7 +157,9 @@ fun PreviewSettings2() {
     SettingScreenContent(
         paddingValues = PaddingValues(),
         rowModeState = mutableStateOf<String>(ROW_MODE),
-        onSetRowMode = {}
+        currentTheme = Theme.DARK_MODE.name,
+        onSetRowMode = {},
+        onChangeTheme = {}
     )
 }
 

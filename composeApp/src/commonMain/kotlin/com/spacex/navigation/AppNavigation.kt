@@ -34,6 +34,7 @@ import com.spacex.ui.HomeDetailScreen
 import com.spacex.ui.MapScreen
 import com.spacex.ui.SettingDetailScreen
 import com.spacex.ui.SettingScreen
+import com.spacex.viewmodel.SettingsViewModel
 import kotlinx.serialization.json.Json
 
 
@@ -146,13 +147,14 @@ fun NavigationSideBar(
 @Composable
 fun RootNavGraph(
     rootNavController: NavHostController,
-    innerPadding: PaddingValues
+    innerPadding: PaddingValues,
+    settingViewModel: SettingsViewModel
 ) {
     NavHost(
         navController = rootNavController,
         startDestination = Graph.NAVIGATION_BAR_SCREEN_GRAPH,
     ) {
-        mainNavGraph(rootNavController = rootNavController, innerPadding = innerPadding)
+        mainNavGraph(rootNavController = rootNavController, innerPadding = innerPadding, settingViewModel = settingViewModel)
         composable(
             route = Routes.HomeDetail.route,
         ) {
@@ -181,7 +183,8 @@ fun RootNavGraph(
 
 fun NavGraphBuilder.mainNavGraph(
     rootNavController: NavHostController,
-    innerPadding: PaddingValues
+    innerPadding: PaddingValues,
+    settingViewModel: SettingsViewModel
 ) {
     navigation(
         startDestination = Routes.Home.route,
@@ -195,7 +198,11 @@ fun NavGraphBuilder.mainNavGraph(
             //HomeScreen(rootNavController = rootNavController, paddingValues = innerPadding)
         }
         composable(route = Routes.Setting.route) {
-            SettingScreen(rootNavController = rootNavController, paddingValues = innerPadding)
+            SettingScreen(
+                rootNavController = rootNavController,
+                paddingValues = innerPadding,
+                viewModel = settingViewModel
+            )
         }
     }
 }

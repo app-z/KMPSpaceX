@@ -10,7 +10,6 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -19,10 +18,11 @@ import com.spacex.navigation.NavigationItem
 import com.spacex.navigation.NavigationSideBar
 import com.spacex.navigation.RootNavGraph
 import com.spacex.navigation.navigationItemsLists
+import com.spacex.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(settingViewModel: SettingsViewModel) {
     val windowSizeClass = calculateWindowSizeClass()
     val isMediumExpandedWWSC by remember(windowSizeClass) {
         derivedStateOf {
@@ -57,6 +57,7 @@ fun MainScreen() {
     }
     MainScaffold(
         rootNavController = rootNavController,
+        settingViewModel = settingViewModel,
         currentRoute = currentRoute,
         isMediumExpandedWWSC = isMediumExpandedWWSC,
         isBottomBarVisible = isBottomBarVisible,
@@ -76,6 +77,7 @@ fun MainScreen() {
 @Composable
 fun MainScaffold(
     rootNavController: NavHostController,
+    settingViewModel: SettingsViewModel,
     currentRoute: String?,
     isMediumExpandedWWSC: Boolean,
     isBottomBarVisible: Boolean,
@@ -129,7 +131,7 @@ fun MainScaffold(
             RootNavGraph(
                 rootNavController = rootNavController,
                 innerPadding = innerPadding,
-
+                settingViewModel = settingViewModel
             )
         }
     }
