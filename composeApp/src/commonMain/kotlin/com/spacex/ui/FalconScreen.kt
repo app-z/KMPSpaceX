@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.spacex.model.FalconInfo
 import com.spacex.navigation.Routes
@@ -52,7 +53,7 @@ fun FalconScreen(
 
     val viewModel = koinViewModel<MainViewModel>()
 
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val rowMode = remember { mutableStateOf<String>(CARD_MODE) }
 

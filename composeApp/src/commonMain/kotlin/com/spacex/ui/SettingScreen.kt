@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Checkbox
@@ -25,19 +24,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.spacex.di.databaseModule
-import com.spacex.di.networkModule
-import com.spacex.di.repositoryModule
-import com.spacex.di.viewmodelModule
 import com.spacex.utils.AppPreferences.Companion.CARD_MODE
 import com.spacex.utils.AppPreferences.Companion.ROW_MODE
 import com.spacex.viewmodel.SettingsViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.KoinApplication
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.String
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,15 +46,17 @@ fun SettingScreen(
 
 
     val viewModel = koinViewModel<SettingsViewModel>()
-    val rowModeState = viewModel.modeState.collectAsState()
+    val rowModeState = viewModel.modeState.collectAsStateWithLifecycle()
 
 //    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
-//    val rowModeStateLiveCycle =
-//        viewModel.modeState
-//            .flowWithLifecycle(
-//                lifecycleOwner.lifecycle,
-//                Lifecycle.State.STARTED
-//            )
+//    val rowModeState = viewModel.modeState
+//        .flowWithLifecycle(
+//            lifecycleOwner.lifecycle,
+//            Lifecycle.State.STARTED
+//        ).collectAsState(
+//            context = lifecycleOwner.lifecycleScope.coroutineContext,
+//            initial = null
+//        )
 
     SettingScreenContent(
         paddingValues, rowModeState, onSetRowMode =
@@ -112,7 +112,7 @@ fun SettingScreenContent(
 
 @Preview
 @Composable
-fun PreviewSettings1(){
+fun PreviewSettings1() {
     SettingScreenContent(
         paddingValues = PaddingValues(),
         rowModeState = mutableStateOf<String>(CARD_MODE),
@@ -122,7 +122,7 @@ fun PreviewSettings1(){
 
 @Preview
 @Composable
-fun PreviewSettings2(){
+fun PreviewSettings2() {
     SettingScreenContent(
         paddingValues = PaddingValues(),
         rowModeState = mutableStateOf<String>(ROW_MODE),
