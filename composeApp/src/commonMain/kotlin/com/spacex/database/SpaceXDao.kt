@@ -14,17 +14,17 @@ interface SpaceXDao {
     fun getAllRockets(): Flow<List<FalconEntity>>
 
     @Query("SELECT * FROM SpaceX WHERE id = :id")
-    fun getRocket(id: String): FalconEntity
+    suspend fun getRocket(id: String): FalconEntity
 
     @Query("SELECT COUNT(*) as count FROM SpaceX")
-    fun count(): Int
+    suspend fun count(): Int
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllRockets(rockets: List<FalconEntity>)
+    suspend fun insertAllRockets(rockets: List<FalconEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRocket(falcon: FalconEntity)
+   suspend fun insertRocket(falcon: FalconEntity)
 
 
 }

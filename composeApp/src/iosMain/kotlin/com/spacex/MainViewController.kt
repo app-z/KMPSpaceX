@@ -1,5 +1,12 @@
 package com.spacex
 
 import androidx.compose.ui.window.ComposeUIViewController
+import com.spacex.di.initKoin
 
-fun MainViewController() = ComposeUIViewController { MainScreen() }
+fun MainViewController() = ComposeUIViewController(
+    configure = {
+        initKoin()
+    }
+) {
+    App()
+}

@@ -1,23 +1,19 @@
-package com.spacex.di
+package com.spacex
 
 import android.app.Application
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import com.spacex.BuildKonfig
+import com.spacex.di.initKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.component.KoinComponent
 import ru.sulgik.mapkit.MapKit
 
-class App : Application(), KoinComponent  {
-
+class MyApp : Application(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
 
         initKoin {
             androidLogger()
-            androidContext(this@App)
+            androidContext(this@MyApp)
         }
 
         initMapKit()

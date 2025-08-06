@@ -1,16 +1,15 @@
 package com.spacex.utils
 
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.unit.dp
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.spacex.database.AppDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
 import platform.Foundation.NSHomeDirectory
-import platform.Foundation.NSUUID
-import platform.UIKit.*
+import platform.Foundation.NSURL
+import platform.Foundation.NSUserDomainMask
 
 //actual fun shareLink(url: String) {
 //    val currentViewController = UIApplication.sharedApplication().keyWindow?.rootViewController
@@ -41,21 +40,21 @@ import platform.UIKit.*
 //
 
 actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
-    val dbFilePath = NSHomeDirectory() + "/$DB_Name"
+    val dbFilePath = documentDirectory() + "/$DB_Name"
     return Room.databaseBuilder<AppDatabase>(
         name = dbFilePath,
     )
 }
 
 @OptIn(ExperimentalForeignApi::class)
-private fun fileDirectory(): String {
-    val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
+private fun documentDirectory(): String {
+    val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
         directory = NSDocumentDirectory,
         inDomain = NSUserDomainMask,
         appropriateForURL = null,
         create = false,
         error = null,
     )
-    return requireNotNull(documentDirectory).path!!
+    return requireNotNull(documentDirectory?.path)
 }
 
