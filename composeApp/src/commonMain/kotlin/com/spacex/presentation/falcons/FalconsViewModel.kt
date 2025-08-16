@@ -40,7 +40,7 @@ class FalconsViewModel(
 
     override val uiState = _uiState
         .onStart {
-            handleEvent(FalconsEvent.LoadFavorites)
+            handleEvent(FalconsEvent.LoadFalcons)
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -70,10 +70,11 @@ class FalconsViewModel(
     fun handleEvent(event: FalconsEvent) {
         when (event) {
             FalconsEvent.ToggleFindActive -> toggleFindActiveFlag()
-            FalconsEvent.LoadFavorites -> loadFalcons()
+            FalconsEvent.LoadFalcons -> loadFalcons()
             FalconsEvent.ClearError -> clearError()
             is FalconsEvent.NavigateToFalconInfoDetails -> navigateToDetails(event.falconInfo)
             is FalconsEvent.ToggleFavorites -> toggleFavorite(event.falconInfo)
+            is FalconsEvent.LoadFilteredFalcons -> getFilteredFalcons(event.filter)
         }
     }
 
@@ -104,7 +105,7 @@ class FalconsViewModel(
         }
     }
 
-    override fun loadFalcons() {
+    private fun loadFalcons() {
         viewModelScope.launch {
 
             repository.loadData().collect { falconEntities ->
@@ -163,15 +164,15 @@ class FalconsViewModel(
     }
 
 
-    override fun getFilteredFalcons(filter: String) {
+    private fun getFilteredFalcons(filter: String) {
         viewModelScope.launch {
 
             showLoaderState()
 
             repository.loadFilteredData(filter = filter)
                 .collect { falconEntities ->
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { state ->
+                        state.copy(
                             falconInfos = if (falconEntities.isEmpty()) {
                                 emptyList()
                             } else {

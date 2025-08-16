@@ -101,7 +101,9 @@ fun FalconsScreen(
             .distinctUntilChanged()
             .debounce(500)
             .collectLatest {
-                updateFalcons(it, viewModel)
+                viewModel.handleEvent(
+                    FalconsEvent.LoadFilteredFalcons(it)
+                )
             }
     }
 
@@ -221,7 +223,7 @@ fun ContentScreen(
         uiState.error != null -> {
             NetworkError(
                 onRetry = {
-                    viewModel.loadFalcons()
+                    viewModel.handleEvent(FalconsEvent.LoadFalcons)
                 }
             )
         }
@@ -245,7 +247,7 @@ fun ContentScreen(
                 falconInfos = uiState.falconInfos,
                 isMediumExpandedWWSC = isMediumExpandedWWSC,
                 onRetry = {
-                    viewModel.loadFalcons()
+                    viewModel.handleEvent(FalconsEvent.LoadFalcons)
                 },
                 onDetail = { falconInfo ->
                     viewModel.handleEvent(
@@ -325,18 +327,3 @@ fun FalconInfoListView(
         }
     }
 }
-
-private fun updateFalcons(
-    filter: String,
-    viewModel: IFalconsViewModel<FalconsState>
-) {
-    if (filter.isEmpty()) {
-        viewModel.loadFalcons()
-    } else {
-        viewModel.getFilteredFalcons(filter)
-    }
-    println("filter = $filter")
-
-}
-
-
