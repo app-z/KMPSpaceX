@@ -1,14 +1,15 @@
 package com.spacex.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Rocket
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,9 +18,13 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import com.spacex.model.FalconInfo
 import com.spacex.viewmodel.FalconDetailViewModel
 import kmpspacex.composeapp.generated.resources.Res
@@ -74,6 +80,11 @@ fun FalconsDetailScreenContent(
     paddingValues: PaddingValues,
     onBookMark: (falconInfo: FalconInfo) -> Unit
 ) {
+
+    val scope = rememberCoroutineScope()
+
+    var showProgress by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -122,23 +133,53 @@ fun FalconsDetailScreenContent(
             )
 
             AsyncImage(
-                placeholder = rememberVectorPainter(Icons.Filled.Rocket),
                 model = falconInfo.pathLarge,
-                //imageVector = Icons.Filled.Rocket,
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier.padding(12.dp)
-                    .fillMaxWidth()
-                    .clip(CircleShape)
-                //.aspectRatio(0.8F)
+                    .fillMaxWidth(),
+                onState = { state ->
+                    showProgress = when (state) {
+                        is AsyncImagePainter.State.Loading -> {
+                            true
+                        }
+
+                        is AsyncImagePainter.State.Error -> {
+                            // Handle error, e.g., show a placeholder or error icon
+                            false
+                        }
+
+                        else -> {
+                            false
+                        }
+                    }
+                }
+
             )
+
+            if (showProgress) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 64.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .fillMaxSize()
+                    )
+                }
+            }
 
             Text(
                 text = falconInfo.details ?: "No description",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Normal,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             )
         }
 
