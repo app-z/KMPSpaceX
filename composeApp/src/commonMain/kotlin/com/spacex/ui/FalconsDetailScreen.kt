@@ -1,5 +1,6 @@
 package com.spacex.ui
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -111,13 +112,18 @@ fun FalconsDetailScreenContent(
                 IconButton(onClick = {
                     onBookMark.invoke(falconInfo)
                 }) {
-                    Icon(
-                        painter = painterResource(
-                            if (isBookmarked) Res.drawable.ic_bookmark_filled
-                            else Res.drawable.ic_bookmark_outlined
-                        ),
-                        contentDescription = null,
-                    )
+                    Crossfade(
+                        targetState = isBookmarked,
+                        label = "Icon Crossfade"
+                    ) { isFavorite ->
+                        Icon(
+                            painter = painterResource(
+                                if (isBookmarked) Res.drawable.ic_bookmark_filled
+                                else Res.drawable.ic_bookmark_outlined
+                            ),
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         )
