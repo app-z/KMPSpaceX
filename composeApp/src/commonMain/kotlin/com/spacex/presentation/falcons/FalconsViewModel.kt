@@ -167,24 +167,28 @@ class FalconsViewModel(
     private fun getFilteredFalcons(filter: String) {
         viewModelScope.launch {
 
-            showLoaderState()
+//            showLoaderState()
+            if (filter.isEmpty()) {
+                loadFalcons()
+            } else {
 
-            repository.loadFilteredData(filter = filter)
-                .collect { falconEntities ->
-                    _uiState.update { state ->
-                        state.copy(
-                            falconInfos = if (falconEntities.isEmpty()) {
-                                emptyList()
-                            } else {
-                                falconEntities.map {
-                                    it.mapToDomain()
-                                }
-                            },
-                            error = null,
-                            isLoading = false
-                        )
+                repository.loadFilteredData(filter = filter)
+                    .collect { falconEntities ->
+                        _uiState.update { state ->
+                            state.copy(
+                                falconInfos = if (falconEntities.isEmpty()) {
+                                    emptyList()
+                                } else {
+                                    falconEntities.map {
+                                        it.mapToDomain()
+                                    }
+                                },
+                                error = null,
+                                isLoading = false
+                            )
+                        }
                     }
-                }
+            }
         }
     }
 

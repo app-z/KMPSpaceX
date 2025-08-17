@@ -117,11 +117,8 @@ fun FalconsScreen(
             Lifecycle.State.STARTED
         )
 
-
-
     SideEffect {
         println("uiState = $uiState")
-        println("effect = $effect")
     }
 
     val localLifecycleOwner = LocalLifecycleOwner.current
