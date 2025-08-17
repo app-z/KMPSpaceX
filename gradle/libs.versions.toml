@@ -1,7 +1,7 @@
 [versions]
 agp = "8.9.1"
 android-compileSdk = "36"
-android-minSdk = "24"
+android-minSdk = "26"
 android-targetSdk = "36"
 androidx-activity = "1.10.1"
 androidx-appcompat = "1.7.1"
@@ -32,6 +32,9 @@ coilVersion = "3.3.0"
 navigationCompose = "2.8.0-alpha13"
 size = "0.5.0"
 androidx-data-store = "1.1.7"
+kotlinStdlib = "2.2.0"
+runner = "1.5.2"
+core = "1.5.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -88,6 +91,9 @@ ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 coil = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coilVersion" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilVersion"}
 coil-network = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilVersion"}
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -101,3 +107,5 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "androidx-room" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+android-lint = { id = "com.android.lint", version.ref = "agp" }

@@ -82,6 +82,7 @@ kotlin {
             implementation(libs.koin.composeVM)
             implementation(libs.ktor.logging)
 
+            implementation(project(":shared"))
         }
 
         iosMain.dependencies {

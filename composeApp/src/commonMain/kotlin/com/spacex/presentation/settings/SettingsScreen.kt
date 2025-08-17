@@ -111,6 +111,19 @@ fun SettingScreenContent(
                 modifier = Modifier.padding(16.dp)
                     .align(Alignment.CenterVertically)
                     .weight(1f),
+                text = com.spacex.shared.SharedObject().getPlatform()
+            )
+        }
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(
+                modifier = Modifier.padding(16.dp)
+                    .align(Alignment.CenterVertically)
+                    .weight(1f),
                 text = "Card mode"
             )
 
