@@ -2,10 +2,12 @@ package com.spacex.ui
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,6 +30,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.spacex.model.FalconInfo
+import kmpspacex.composeapp.generated.resources.Res
+import kmpspacex.composeapp.generated.resources.falcons
+import kmpspacex.composeapp.generated.resources.no_data
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -36,8 +42,11 @@ fun FalconInfoRow(
     onClick: (falconInfo: FalconInfo) -> Unit
 ) {
     Row(
-        modifier = Modifier.padding(all = 8.dp).clickable(
-            onClick = { onClick(falconInfo) })
+        modifier = Modifier
+            .padding(all = 8.dp)
+            .background(MaterialTheme.colorScheme.surface)
+            .clickable(
+                onClick = { onClick.invoke(falconInfo) })
     ) {
 
         AsyncImage(
@@ -78,30 +87,30 @@ fun FalconInfoRow(
                     .animateContentSize()
                     .padding(1.dp)
             ) {
-                falconInfo.details?.let {
-                    Text(
-                        modifier = Modifier.padding(8.dp),
-                        text = it,
-                        maxLines = if (isExpanded) Int.MAX_VALUE else 1,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    text = falconInfo.details ?: stringResource(Res.string.no_data),
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 1,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }
 }
 
 
-    @Preview
-    @Composable
-    fun PreviewMessageCard() {
-        FalconInfoRow(
-            FalconInfo(
-                dateUtc = "234234234",
-                name = "Rocket",
-                id = "N1",
-                details = "Detail can be long, Detail can be long, Detail can be long, "
-            ),
-            onClick = {}
-        )
-    }
+@Preview
+@Composable
+fun PreviewMessageCard() {
+    FalconInfoRow(
+        FalconInfo(
+            dateUtc = "234234234",
+            name = "Rocket",
+            id = "N1",
+            details = "Detail can be long, Detail can be long, Detail can be long, "
+        ),
+        onClick = {}
+    )
+}

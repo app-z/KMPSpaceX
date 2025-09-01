@@ -260,10 +260,19 @@ fun FalconInfoListOrCardView(
 
             LazyColumn {
                 items(falconInfos, key = { it.id }) { falconInfo ->
-                    FalconInfoRow(
+                    SwipeToDeletePokemonCard(
                         falconInfo = falconInfo, onClick = {
                             onDetail.invoke(falconInfo)
-                        })
+                        },
+                        onDeleteClick = {
+                            onFavorite.invoke(falconInfo)
+                        }
+                    )
+
+//                    FalconInfoRow(
+//                        falconInfo = falconInfo, onClick = {
+//                            onDetail.invoke(falconInfo)
+//                        })
 
                 }
             }
