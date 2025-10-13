@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FindInPage
@@ -293,15 +294,14 @@ fun FalconInfoListView(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
 //                    contentPadding = paddingValues,
                     content = {
-                        items(falconInfos.size) { index ->
+                        items(falconInfos) { falconInfo ->
                             FalconInfoCard2(
-                                falconInfos[index],
-                                index,
+                                falconInfo,
                                 onClickItem = {
-                                    onDetail.invoke(falconInfos[index])
+                                    onDetail.invoke(falconInfo)
                                 },
                                 onClickFavorite = {
-                                    onFavorite.invoke(falconInfos[index])
+                                    onFavorite.invoke(falconInfo)
                                 }
                             )
                         }

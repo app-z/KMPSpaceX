@@ -16,8 +16,6 @@ kotlin = "2.2.0"
 
 # navigationCompose = "2.9.1"
 materialVersion = "1.7.8"
-nav3Core = "1.0.0-alpha07"
-lifecycleViewmodelNav3 = "1.0.0-alpha04"
 
 ksp = "2.2.0-2.0.2"
 androidx-room = "2.7.2"
@@ -25,11 +23,13 @@ androidx-room = "2.7.2"
 koin = "4.0.2"
 ktor = "3.0.0"
 
+mockkVersion = "1.14.5"
+
 sqlite = "2.5.2"
 
 coilVersion = "3.3.0"
 
-navigationCompose = "2.8.0-alpha13"
+navigationCompose = "2.9.0"
 size = "0.5.0"
 androidx-data-store = "1.1.7"
 
@@ -47,10 +47,6 @@ androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:life
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialVersion" }
-
-androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
-androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
-androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
 
 androidx-data-store-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "androidx-data-store" }
 
@@ -75,6 +71,11 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-composeVM = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 
+
+koin-mockk-android = {  module = "io.mockk:mockk-android", version.ref = "mockkVersion" }
+koin-mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockkVersion" }
+
+koin-mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
 
 # ktor
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }

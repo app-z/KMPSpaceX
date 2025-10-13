@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -246,11 +248,11 @@ fun FalconInfoListOrCardView(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 content = {
-                    items(falconInfos.size) { index ->
-                        FalconInfoCard2(falconInfos[index], index, onClickItem = {
-                            onDetail.invoke(falconInfos[index])
+                    items(falconInfos, key = { it.id }) { falconInfo ->
+                        FalconInfoCard2(falconInfo, onClickItem = {
+                            onDetail.invoke(falconInfo)
                         }, onClickFavorite = {
-                            onFavorite.invoke(falconInfos[index])
+                            onFavorite.invoke(falconInfo)
                         })
                     }
                 })

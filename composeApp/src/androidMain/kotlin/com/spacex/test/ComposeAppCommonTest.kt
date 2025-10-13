@@ -1,10 +1,10 @@
-package com.spacex
+package com.spacex.test
 
 import com.spacex.database.AppDatabase
 import com.spacex.repository.FalconRepository
+import io.mockk.mockk
+import org.junit.Test
 import org.koin.dsl.module
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ComposeAppCommonTest {
 
@@ -23,6 +23,6 @@ class ComposeAppCommonTest {
 
     @Test
     fun example() {
-        assertEquals(3, 1 + 2)
+//        assertEquals(3, 1 + 2)
     }
 }

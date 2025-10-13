@@ -1,5 +1,6 @@
 import com.android.build.api.dsl.androidLibrary
 import org.gradle.kotlin.dsl.implementation
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -45,6 +46,11 @@ kotlin {
             // Koin
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+
+            //            implementation ( libs.koin.mockk.android )
+            implementation ( libs.koin.mockk )
+
+            implementation("junit:junit:4.13.2")
 
         }
         commonMain.dependencies {
@@ -108,6 +114,8 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/LICENSE-notice.md"
+            excludes += "/META-INF/LICENSE.md"
         }
     }
     buildTypes {

@@ -33,9 +33,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun FalconInfoCard2(
     falconInfo: FalconInfo,
-    index: Int,
-    onClickItem: (index: Int) -> Unit,
-    onClickFavorite: (index: Int) -> Unit
+    onClickItem: (falconInfo: FalconInfo) -> Unit,
+    onClickFavorite: (falconInfo: FalconInfo) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -46,7 +45,7 @@ fun FalconInfoCard2(
         Column(
             modifier = Modifier
             .wrapContentSize()
-            .clickable(onClick = { onClickItem.invoke(index) })
+            .clickable(onClick = { onClickItem.invoke(falconInfo) })
         ) {
 
             Box {
@@ -55,7 +54,7 @@ fun FalconInfoCard2(
                         .align(Alignment.TopEnd)
                         .clickable(onClick =
                             {
-                                onClickFavorite(index)
+                                onClickFavorite(falconInfo)
                             }
                         ),
                     painter = painterResource(
@@ -101,6 +100,6 @@ fun PreviewMessageCard2() {
             id = "N1",
             isBookMark = true,
             description = "Detail can be long, Detail can be long, Detail can be long, "
-        ), 0, onClickItem = {}, onClickFavorite = {}
+        ), onClickItem = {}, onClickFavorite = {}
     )
 }
